@@ -1,1 +1,1 @@
-# Workshop 3 package
+# TinyLang package

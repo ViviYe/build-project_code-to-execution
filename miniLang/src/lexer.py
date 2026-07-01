@@ -2,23 +2,6 @@ from src.tokens import Token, TokenType
 
 
 def tokenize(source: str) -> list[Token]:
-    # Convert source code into tokens.
-    #
-    # Example:
-    #     "12 + 3" -> [NUMBER(12), PLUS, NUMBER(3), EOF]
-    #
-    # Required for Workshop 3:
-    #     - multi-digit numbers
-    #     - +
-    #     - *
-    #     - whitespace
-    #     - EOF
-    #
-    # Stretch:
-    #     - -
-    #     - /
-    #     - parentheses
-
     tokens = []
     i = 0
 
@@ -30,44 +13,33 @@ def tokenize(source: str) -> list[Token]:
             continue
 
         if char.isdigit():
-            # TODO:
-            # Read the full multi-digit number.
-            #
-            # Example:
-            # source = "123+4"
-            # if i starts at 0, we want to read "123" as one token.
-            #
-            # Hints:
-            # start = i
-            # while i < len(source) and source[i].isdigit():
-            #     i += 1
-            # number_text = source[start:i]
-            # tokens.append(Token(TokenType.NUMBER, int(number_text)))
-            # continue
-            raise NotImplementedError("TODO: lex a full number")
+            start = i
+            while i < len(source) and source[i].isdigit():
+                i += 1
+            tokens.append(Token(TokenType.NUMBER, int(source[start:i])))
+            continue
 
-        if char == "+":
-            # TODO:
-            # Add a PLUS token and advance i.
-            raise NotImplementedError("TODO: lex +")
+        if char.isalpha() or char == "_":
+            start = i
+            while i < len(source) and (source[i].isalnum() or source[i] == "_"):
+                i += 1
+            tokens.append(Token(TokenType.IDENTIFIER, source[start:i]))
+            continue
 
-        if char == "*":
-            # TODO:
-            # Add a STAR token and advance i.
-            raise NotImplementedError("TODO: lex *")
+        single_char_tokens = {
+            "+": TokenType.PLUS,
+            "-": TokenType.MINUS,
+            "*": TokenType.STAR,
+            "/": TokenType.SLASH,
+            "(": TokenType.LEFT_PAREN,
+            ")": TokenType.RIGHT_PAREN,
+            "=": TokenType.ASSIGN,
+        }
 
-        # Stretch / future:
-        if char == "-":
-            raise NotImplementedError("STRETCH TODO: lex -")
-
-        if char == "/":
-            raise NotImplementedError("STRETCH TODO: lex /")
-
-        if char == "(":
-            raise NotImplementedError("STRETCH TODO: lex (")
-
-        if char == ")":
-            raise NotImplementedError("STRETCH TODO: lex )")
+        if char in single_char_tokens:
+            tokens.append(Token(single_char_tokens[char]))
+            i += 1
+            continue
 
         raise SyntaxError(f"Unexpected character: {char!r}")
 

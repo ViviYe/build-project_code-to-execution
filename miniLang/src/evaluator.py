@@ -1,14 +1,28 @@
-from src.ast_nodes import Number, BinaryOp
+from src.ast_nodes import Number, Variable, Assignment, BinaryOp
+from src.environment import Environment
 
 
-def evaluate(node):
-    # Workshop 4 TODO:
-    #
-    # In Workshop 3, we focus on building the AST.
-    # In Workshop 4, we will reconnect the AST to evaluation.
-    #
-    # Suggested future behavior:
-    #     Number(3) -> 3
-    #     BinaryOp("+", Number(1), Number(2)) -> 3
+def evaluate(node, env: Environment):
+    if isinstance(node, Number):
+        # TODO: return the number's value.
+        raise NotImplementedError("TODO: evaluate Number")
 
-    raise NotImplementedError("Evaluator is intentionally left for Workshop 4")
+    if isinstance(node, BinaryOp):
+        # TODO:
+        # 1. evaluate left child
+        # 2. evaluate right child
+        # 3. apply node.op
+        raise NotImplementedError("TODO: evaluate BinaryOp")
+
+    if isinstance(node, Variable):
+        # TODO: look up node.name in env.
+        raise NotImplementedError("TODO: evaluate Variable")
+
+    if isinstance(node, Assignment):
+        # TODO:
+        # 1. evaluate node.value
+        # 2. store it in env
+        # 3. return the stored value
+        raise NotImplementedError("TODO: evaluate Assignment")
+
+    raise TypeError(f"Unknown AST node: {node}")

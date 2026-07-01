@@ -5,15 +5,14 @@ from typing import Any
 
 class TokenType(Enum):
     NUMBER = auto()
+    IDENTIFIER = auto()
     PLUS = auto()
-    STAR = auto()
-
-    # Stretch / future operators
     MINUS = auto()
+    STAR = auto()
     SLASH = auto()
     LEFT_PAREN = auto()
     RIGHT_PAREN = auto()
-
+    ASSIGN = auto()
     EOF = auto()
 
 

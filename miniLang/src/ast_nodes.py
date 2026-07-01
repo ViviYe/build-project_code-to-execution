@@ -8,6 +8,17 @@ class Number:
 
 
 @dataclass(frozen=True)
+class Variable:
+    name: str
+
+
+@dataclass(frozen=True)
+class Assignment:
+    name: str
+    value: Any
+
+
+@dataclass(frozen=True)
 class BinaryOp:
     op: str
     left: Any

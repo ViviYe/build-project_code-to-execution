@@ -1,25 +1,13 @@
 from src.lexer import tokenize
 from src.parser import Parser
 from src.ast_printer import pretty_ast
+from src.environment import Environment
 from src.evaluator import evaluate
 
 
 class CustomLanguage:
-    # Tiny language shell.
-    #
-    # Workshop 3:
-    #     source -> tokens -> AST
-    #
-    # Workshop 4:
-    #     AST -> evaluation result
-    #     variables
-    #     environment
-
     def __init__(self):
-        # Workshop 4 TODO:
-        # This will store variables later, for example:
-        # self.env["x"] = 5
-        self.env = {}
+        self.env = Environment()
 
     def parse(self, source: str):
         tokens = tokenize(source)
@@ -27,7 +15,6 @@ class CustomLanguage:
         return parser.parse()
 
     def inspect(self, source: str) -> None:
-        # Show tokens and AST without evaluating.
         tokens = tokenize(source)
         ast = Parser(tokens).parse()
 
@@ -37,25 +24,18 @@ class CustomLanguage:
         print("\nAST:")
         print(pretty_ast(ast))
 
-    def eval(self, source: str):
-        # Workshop 4 TODO.
-        #
-        # Eventually:
-        #     source -> tokens -> AST -> result
-        #
-        # For Workshop 3, this intentionally raises NotImplementedError.
-        ast = self.parse(source)
-        return evaluate(ast)
+    def run(self, source: str):
+        # TODO:
+        # 1. parse source
+        # 2. evaluate AST using self.env
+        # 3. return result
+        raise NotImplementedError("TODO: implement run()")
 
     def repl(self) -> None:
-        # A tiny input loop.
-        #
-        # For Workshop 3, the REPL shows tokens and AST.
-        # For Workshop 4, it will evaluate programs.
-
-        print("CustomLanguage REPL")
-        print("Workshop 3 mode: source -> tokens -> AST")
+        print("TinyLang REPL")
         print("Type 'exit' or 'quit' to stop.")
+        print("Type ':env' to inspect the environment.")
+        print("Type ':ast <expr>' to inspect the AST.")
         print()
 
         while True:
@@ -65,12 +45,19 @@ class CustomLanguage:
                 if source in {"exit", "quit"}:
                     break
 
+                if source == ":env":
+                    print(self.env)
+                    continue
+
+                if source.startswith(":ast "):
+                    self.inspect(source[len(":ast "):])
+                    continue
+
                 if not source:
                     continue
 
-                self.inspect(source)
-                print()
+                result = self.run(source)
+                print(result)
 
             except Exception as exc:
                 print(f"Error: {exc}")
-                print()
