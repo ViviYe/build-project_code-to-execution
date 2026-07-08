@@ -1,5 +1,13 @@
 from src.tokens import Token, TokenType
 
+KEYWORDS = {
+    "if": TokenType.IF,
+    "while": TokenType.WHILE,
+    "true": TokenType.TRUE,
+    "false": TokenType.FALSE,
+    "True": TokenType.TRUE,
+    "False": TokenType.FALSE,
+}
 
 def tokenize(source: str) -> list[Token]:
     tokens = []
@@ -23,17 +31,42 @@ def tokenize(source: str) -> list[Token]:
             start = i
             while i < len(source) and (source[i].isalnum() or source[i] == "_"):
                 i += 1
-            tokens.append(Token(TokenType.IDENTIFIER, source[start:i]))
+            text = source[start:i]
+            token_type = KEYWORDS.get(text, TokenType.IDENTIFIER)
+            if token_type == TokenType.TRUE:
+                tokens.append(Token(TokenType.TRUE, True))
+            elif token_type == TokenType.FALSE:
+                tokens.append(Token(TokenType.FALSE, False))
+            elif token_type == TokenType.IDENTIFIER:
+                tokens.append(Token(TokenType.IDENTIFIER, text))
+            else:
+                tokens.append(Token(token_type))
             continue
+
+        if i + 1 < len(source):
+            two = source[i:i + 2]
+            two_char_tokens = {
+                ">=": TokenType.GREATER_EQUAL,
+                "<=": TokenType.LESS_EQUAL,
+                "==": TokenType.EQUAL_EQUAL,
+                "!=": TokenType.BANG_EQUAL,
+            }
+            if two in two_char_tokens:
+                tokens.append(Token(two_char_tokens[two]))
+                i += 2
+                continue
 
         single_char_tokens = {
             "+": TokenType.PLUS,
             "-": TokenType.MINUS,
             "*": TokenType.STAR,
             "/": TokenType.SLASH,
+            ">": TokenType.GREATER,
+            "<": TokenType.LESS,
             "(": TokenType.LEFT_PAREN,
             ")": TokenType.RIGHT_PAREN,
             "=": TokenType.ASSIGN,
+            ":": TokenType.COLON,
         }
 
         if char in single_char_tokens:
