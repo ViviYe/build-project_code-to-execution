@@ -1,36 +1,21 @@
-from src.lexer import tokenize
-from src.parser import Parser
 from src.environment import Environment
 from src.evaluator import evaluate
-
+from src.lexer import tokenize
+from src.parser import Parser
 class CustomLanguage:
-    def __init__(self):
-        self.env = Environment()
-
-    def parse(self, source: str):
-        tokens = tokenize(source)
-        parser = Parser(tokens)
-        return parser.parse()
-
-    def run(self, source: str):
-        ast = self.parse(source)
-        return evaluate(ast, self.env)
-
-    def repl(self) -> None:
-        print("TinyLang REPL")
-        print("Type 'exit' or 'quit' to stop.")
-        print("Type ':env' to inspect the environment.")
-        print()
-        while True:
-            try:
-                source = input(">>> ").strip()
-                if source in {"exit", "quit"}:
-                    break
-                if source == ":env":
-                    print(self.env)
-                    continue
-                if not source:
-                    continue
-                print(self.run(source))
-            except Exception as exc:
-                print(f"Error: {exc}")
+ def __init__(self): self.env=Environment()
+ def parse(self,source): return Parser(tokenize(source)).parse()
+ def run(self,source): return evaluate(self.parse(source),self.env)
+ def repl(self):
+  print('MiniLang Workshop 6')
+  while True:
+   try:
+    s=input('>>> ').strip()
+    if s in {'quit','exit'}: break
+    if s==':env': print(self.env.values); continue
+    if s==':functions': print(sorted(self.env.functions)); continue
+    if not s: continue
+    r=self.run(s)
+    if s.startswith('def '): print('Function defined')
+    elif r is not None: print(r)
+   except Exception as e: print(f'{type(e).__name__}: {e}')

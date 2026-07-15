@@ -1,44 +1,33 @@
-from src.ast_nodes import Number, Boolean, Variable, Assignment, BinaryOp, Comparison, IfStatement, WhileStatement
+from src.ast_nodes import *
 from src.environment import Environment
-
-def evaluate(node, env: Environment, max_iterations: int = 1000):
-    if isinstance(node, Number):
-        return node.value
-
-    if isinstance(node, Boolean):
-        return node.value
-
-    if isinstance(node, BinaryOp):
-        left = evaluate(node.left, env, max_iterations)
-        right = evaluate(node.right, env, max_iterations)
-        if node.op == "+":
-            return left + right
-        if node.op == "-":
-            return left - right
-        if node.op == "*":
-            return left * right
-        if node.op == "/":
-            return left / right
-        raise ValueError(f"Unknown operator: {node.op}")
-
-    if isinstance(node, Variable):
-        return env.get(node.name)
-
-    if isinstance(node, Assignment):
-        value = evaluate(node.value, env, max_iterations)
-        env.define(node.name, value)
-        return value
-
-    # TODO 1: evaluate Comparison nodes.
-    if isinstance(node, Comparison):
-        raise NotImplementedError("TODO: evaluate Comparison")
-
-    # TODO 2: evaluate IfStatement nodes.
-    if isinstance(node, IfStatement):
-        raise NotImplementedError("TODO: evaluate IfStatement")
-
-    # TODO 3: evaluate WhileStatement nodes.
-    if isinstance(node, WhileStatement):
-        raise NotImplementedError("TODO: evaluate WhileStatement")
-
-    raise TypeError(f"Unknown AST node: {node}")
+def evaluate(node,env):
+ if isinstance(node,Number): return node.value
+ if isinstance(node,Boolean): return node.value
+ if isinstance(node,Variable): return env.get(node.name)
+ if isinstance(node,Assignment):
+  value=evaluate(node.value,env); env.define(node.name,value); return value
+ if isinstance(node,BinaryOp):
+  a=evaluate(node.left,env); b=evaluate(node.right,env)
+  if node.op=='+': return a+b
+  if node.op=='-': return a-b
+  if node.op=='*': return a*b
+  if node.op=='/': return a/b
+  raise ValueError(node.op)
+ if isinstance(node,Comparison):
+  a=evaluate(node.left,env); b=evaluate(node.right,env)
+  if node.op=='>': return a>b
+  if node.op=='<': return a<b
+  if node.op=='>=': return a>=b
+  if node.op=='<=': return a<=b
+  if node.op=='==': return a==b
+  if node.op=='!=': return a!=b
+  raise ValueError(node.op)
+ if isinstance(node,IfStatement):
+  if evaluate(node.condition,env): evaluate(node.body,env)
+  return None
+ if isinstance(node,WhileStatement):
+  while evaluate(node.condition,env): evaluate(node.body,env)
+  return None
+ if isinstance(node,FunctionDefinition): raise NotImplementedError('TODO: FunctionDefinition')
+ if isinstance(node,FunctionCall): raise NotImplementedError('TODO: FunctionCall')
+ raise TypeError(f'Unknown AST node: {node}')
